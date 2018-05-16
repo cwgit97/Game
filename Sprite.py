@@ -4,7 +4,7 @@ import os
 class Rocket_Player(pygame.sprite.Sprite):
 	# Constructor. Pass in the color of the block,
 	# and its x and y position
-	def __init__(self,  x, y, new_height):
+	def __init__(self,  x, y, new_height, movespeed = 10):
 		# Call the parent class (Sprite) constructor
 		pygame.sprite.Sprite.__init__(self)
 
@@ -27,8 +27,12 @@ class Rocket_Player(pygame.sprite.Sprite):
 		self.rect.y = y
 		self.rect.x = x
 
-
-
+		self.dest = None
+		self.movespeed = movespeed
+		self.pathspeed = None
+	def move_to(self, coords):
+		self.dest = coords
+		# self.pathspeed = distance()
 
 	def down(self):
 		self.rect.y += 1;
@@ -36,6 +40,26 @@ class Rocket_Player(pygame.sprite.Sprite):
 	def up(self):
 		self.rect.y -= 1;
 
+	def update(self):
+		if self.dest != None:
+			dist = distance(self.dest, (self.rect.x, self.rect.y))
+			if dist < self.movespeed:
+				self.rect.x = self.dest[0]
+				self.rect.y = self.dest[1]
+				self.dest = None
+				return
+
+
+			if (abs(self.dest[0] - self.rect.x)):
+				self.rect.x += (self.dest[0] - self.rect.x) // abs(self.dest[0] - self.rect.x) * (dist // 3)
+			if (abs(self.dest[1] - self.rect.y)):
+
+				self.rect.y += (self.dest[1] - self.rect.y)  // abs(self.dest[1] - self.rect.y) * (dist // 3)
+
+
+def distance(coord1, coord2):
+
+	return ((coord1[1] - coord2[1])**2 + (coord1[0] - coord2[0])**2)**.5
 class Lane(pygame.sprite.Sprite):
 	def __init__(self,  x, y, size):
 
